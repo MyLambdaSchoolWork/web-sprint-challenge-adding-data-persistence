@@ -1,14 +1,17 @@
 // build your `/api/resources` router here
 const router = require('express').Router()
 
-const resources = require('./model')
+const resources = require('./model.js')
 
 router.get('/', async (_, res) => {
   const allResources = await resources.getResources()
   res.status(200).json(allResources)
 })
 
-router.post('/', (req, res, next) => {
+
+// not using middleware
+// because this is the only place resource has to be validated
+router.post('/', (req, res) => {
   const {
     resource_name,
     resource_description
@@ -19,7 +22,7 @@ router.post('/', (req, res, next) => {
       .then( newResource => {
         res.status(201).json(newResource)
       })
-      .catch( err => {
+      .catch( () => {
         res.status(400).json('resource_name must be unique')
       })
   } else {
